@@ -2,6 +2,7 @@
 import sys
 from datetime import date, datetime, timedelta
 import random
+import pandas as pd
 
 
 '''
@@ -71,11 +72,30 @@ def generateSchedule(listofDateTime):
    
     return d
 
+def expandToList(dictionary):
+    '''This module expands the dictionary of schedules into a list, dates need to be duplicated to fill the list
+    '''
+    _date = []
+    _time = []
+    _state =[]
+    for k in dictionary:
+        for i in range(0,len(dictionary[k][1])):
+            _date.append(k)
+    _time.append(dictionary[k][0])
+    _state.append(dictionary[k][1])
+    print(len(_date))
+    print(_time)
+    print(_state)
+    return _date
 
 def main():
     testData = generateData(DATE_OBJ[0],DATE_OBJ[1], timedelta(minutes = random.randint(15,40))) 
     schedule = generateSchedule(testData)
-    return print(schedule)
+
+    d = expandToList(schedule)
+    print(d)
+
+    return 
 
 if __name__ == '__main__':
     sys.exit(main())
