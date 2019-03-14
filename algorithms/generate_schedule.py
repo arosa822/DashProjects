@@ -31,8 +31,21 @@ SCHED = {'8:00':'Lower','10:30':'Raise',
 # could do this first, but i included this step for reference
 DATE_OBJ=[datetime.strptime(i,'%m/%d %H:%M') for i in START_END]
 
+
+# generator for grabbing the days within timespan of log
+def daterange(start_date,end_date):
+    for n in range(int((end_date-start_date).days)):
+        yield start_date + timedelta(n)
+
+
 # generate random time sequence of dates between the two dates specified above
 def generateData(start, end, delta):
+    '''
+    fills in list of random data between the two dates within START_END
+    :PARAM start: 
+    :PARAM end: 
+    :PARAM delta: 
+    '''
     curr = start
     listofDateTime = []
     while curr < end: 
@@ -40,20 +53,23 @@ def generateData(start, end, delta):
         curr += delta
     return listofDateTime
 
+
 # depending on the span of time create a schedule based on the data above
 def generateSchedule(listofDateTime):
     span = [min(listofDateTime),max(listofDateTime)]
-    startDate=span
-    scheduleTime = []
-    scheduleState = []
-    for key in SCHED:
-        scheduleTime.append(key)
-        scheduleState.append(SCHED[key])
-
+    t=[]
+    s=[]
     # format the schedules to time     
-    scheduleTime=[datetime.strptime(i,'%H:%M').time() for i in scheduleTime]
+    for key in SCHED:
+        t.append(key)
+        s.append(SCHED[key])
+    t=[datetime.strptime(i,'%H:%M').time() for i in t]
+
+    d = {}    
+    for single_date in daterange(span[0],span[1]+timedelta(days=1)):
+        d[single_date] = [t,s]
    
-    return 
+    return d
 
 
 def main():
