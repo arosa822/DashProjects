@@ -79,14 +79,14 @@ def expandToList(dictionary):
     _time = []
     _state =[]
     for k in dictionary:
+        for i in dictionary[k][0]:
+            _time.append(i)
+        for i in dictionary[k][1]:
+            _state.append(i)
         for i in range(0,len(dictionary[k][1])):
             _date.append(k)
-    _time.append(dictionary[k][0])
-    _state.append(dictionary[k][1])
-    print(len(_date))
-    print(_time)
-    print(_state)
-    return _date
+    df=pd.DataFrame({'Day':_date,'Time':_time,'Action':_state})
+    return df
 
 def main():
     testData = generateData(DATE_OBJ[0],DATE_OBJ[1], timedelta(minutes = random.randint(15,40))) 
