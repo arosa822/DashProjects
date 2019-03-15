@@ -14,6 +14,7 @@ import pandas as pd
 
 #LOG = ('./data/device_1.log')
 
+LOG=sys.argv[1] 
 
 
 def filterLog(string):
@@ -27,7 +28,7 @@ def filterLog(string):
         # conver datetime to datetime object
         t_object = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
 
-        return time,state,t_object
+        return state,t_object
     except: 
         #print("no matches")
         pass
@@ -46,8 +47,7 @@ def findEdges():
     with open(LOG) as f:
         for l in f:
             try:
-                [_time,_state,_tObj]=filterLog(l)
-                t.append(_time)
+                [_state,_tObj]=filterLog(l)
                 s.append(int(_state))
                 t_obj.append(_tObj)
                 edge_movement=[]
@@ -67,13 +67,13 @@ def findEdges():
              if a < 40:
                 #print('{}: Move Down'.format(t_obj[i]))
                 edge_movement.append('Down')
-                edge_time.append(t[i])
+                edge_time.append(t_obj[i])
                 state = 0 
          if state == 0:
             if a > 80:
                 #print('{}: Move Up'.format(t_obj[i]))
                 edge_movement.append('Up')
-                edge_time.append(t[i])
+                edge_time.append(t_obj[i])
                 state = 100
     data = {'time': edge_time, 'action': edge_movement}
     df = pd.DataFrame(data)
@@ -81,13 +81,12 @@ def findEdges():
 
 
 def main():
-    [s,t,df]=findEdges()
     
+
     return
 
 
-LOG = sys.argv[1]
-df = findEdges()[2]
+[s,t_obj,df]=findEdges()
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -103,7 +102,7 @@ html.Div(children=''),
 
         figure={
             'data': [
-                {'x': findEdges()[1], 'y': findEdges()[0], 'type': 'line', 'name': 'curve'}
+                {'x': t_obj, 'y': s, 'type': 'line', 'name': 'curve'}
             ],
 
 
@@ -124,4 +123,7 @@ html.Div(children=''),
 
 if __name__ == '__main__':
     print('sorting data for {}'.format(LOG))
+    
+    
+    print(len(t_obj),len(s))
     app.run_server(debug=True,host='0.0.0.0', port = 8080)
