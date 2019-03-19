@@ -38,13 +38,13 @@ def filterLog(string):
 def listAvg(lst):
     return(sum(lst)/len(lst))
 
-def findEdges():
+def findEdges(LogFile):
     #t = filterLog(testString) 
     t =[]
     s =[]
     t_obj=[]
     
-    with open(LOG) as f:
+    with open(LogFile) as f:
         for l in f:
             try:
                 [_state,_tObj]=filterLog(l)
@@ -86,7 +86,10 @@ def main():
     return
 
 
-[s,t_obj,df]=findEdges()
+[s_1,t_obj_1,df_1]=findEdges(sys.argv[1])
+
+[s_2,t_obj_2,df_2]=findEdges(sys.argv[2])
+
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -102,7 +105,9 @@ html.Div(children=''),
 
         figure={
             'data': [
-                {'x': t_obj, 'y': s, 'type': 'line', 'name': 'curve'}
+                {'x': t_obj_1, 'y': s_1, 'type': 'line', 'name': sys.argv[1]},
+                {'x': t_obj_2, 'y': s_2, 'type': 'line', 'name': sys.argv[2]}
+
             ],
 
 
@@ -115,8 +120,8 @@ html.Div(children=''),
     # placeholder for data https://dash.plot.ly/datatable see for reference
     dash_table.DataTable(
         id='table',
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict("rows"),
+        columns=[{"name": i, "id": i} for i in df_1.columns],
+        data=df_1.to_dict("rows"),
 
                     )
 ])
@@ -125,5 +130,5 @@ if __name__ == '__main__':
     print('sorting data for {}'.format(LOG))
     
     
-    print(len(t_obj),len(s))
+    print(len(t_obj_1),len(s_1))
     app.run_server(debug=True,host='0.0.0.0', port = 8080)

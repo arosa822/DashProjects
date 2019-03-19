@@ -2,3 +2,4 @@ data/
 *.*.swp
 algorithms/__pycache__/
 vault
+data/
