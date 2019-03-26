@@ -94,7 +94,7 @@ def main():
 
     d = expandToList(schedule)
     print(d)
-
+    print(list(d['Action']))
     return 
 
 if __name__ == '__main__':

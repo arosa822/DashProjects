@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 import sys
 import re
+from datetime import date, timedelta
 import datetime
 import dash
 import dash_html_components as html
@@ -15,6 +16,62 @@ import pandas as pd
 #LOG = ('./data/device_1.log')
 
 LOG=sys.argv[1] 
+
+# predefined schedule
+strSCHED = {'8:00':'Lower','10:30':'Raise',
+        '10:35':'Lower','12:30':'Raise',
+        '12:35':'Lower','13:30':'Raise',
+        '13:35':'Lower','14:30':'Raise',
+        '14:35':'Lower','16:30':'Raise',
+        '16:35':'Lower','19:30':'Raise',
+        '19:35':'Lower','10:00':'Raise'}
+
+SCHED = {'8:00':0,'10:30':100,
+        '10:35':0,'12:30':100,
+        '12:35':0,'13:30':100,
+        '13:35':0,'14:30':100,
+        '14:35':0,'16:30':100,
+        '16:35':0,'19:30':100,
+        '19:35':0,'10:00':100}
+
+# generator for grabbing the days within timespan of log
+def daterange(start_date,end_date):
+    for n in range(int((end_date-start_date).days)):
+        yield start_date + timedelta(n)
+
+
+# Generate a schedule based on the data collected
+def generateSchedule(listofDateTime):
+    span = [min(listofDateTime),max(listofDateTime)]
+    t=[]
+    s=[]
+    # format the schedules to time
+    for key in SCHED:
+        t.append(key)
+        s.append(SCHED[key])
+    #t=[datetime.strptime(i,'%H:%M').time() for i in t]
+
+    d = {}
+    for single_date in daterange(span[0],span[1]+timedelta(days=1)):
+        d[single_date] = [t,s]
+
+    return d
+
+def expandToList(dictionary):
+    '''This module expands the dictionary of schedules into a list, dates need to be duplicated to fill the list
+    '''
+    _date = []
+    _time = []
+    _state =[]
+    for k in dictionary:
+        for i in dictionary[k][0]:
+            _time.append(i)
+        for i in dictionary[k][1]:
+            _state.append(i)
+        for i in range(0,len(dictionary[k][1])):
+            _date.append(k)
+    df=pd.DataFrame({'Day':_date,'Time':_time,'Action':_state})
+    return df
 
 
 def filterLog(string):
@@ -80,16 +137,13 @@ def findEdges(LogFile):
     return s, t_obj, df 
 
 
-def main():
-    
-
-    return
-
-
 [s_1,t_obj_1,df_1]=findEdges(sys.argv[1])
 
 [s_2,t_obj_2,df_2]=findEdges(sys.argv[2])
 
+schedule = generateSchedule(t_obj_1)
+
+d = expandToList(schedule)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -131,6 +185,25 @@ html.Div(children=''),
 
             'layout': {
                 'title': 'observed:' + sys.argv[2]
+
+            }
+        }
+    ),
+
+html.Div(children=''),
+
+    dcc.Graph(
+        id='graph3',
+
+        figure={
+            'data':[ 
+                {'x': list(d['Time']), 'y': list(d['Action']), 'type': 'line', 'name': 'expected'}
+
+            ],
+
+
+            'layout': {
+                'title': 'Expected'
 
             }
         }
