@@ -12,11 +12,27 @@ import pandas as pd
 # test db
 #df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
 
-#LOG = ('./data/device_1.log')
+LOG1 = ('./data/device_1.log')
+LOG2 = ('./data/device_2.log')
 
-LOG=sys.argv[1] 
+#LOG=sys.argv[1] 
+
+# predefined schedule
+SCHED = {'8:00':'Lower','10:30':'Raise',
+        '10:35':'Lower','12:30':'Raise',
+        '12:35':'Lower','13:30':'Raise',
+        '13:35':'Lower','14:30':'Raise',
+        '14:35':'Lower','16:30':'Raise',
+        '16:35':'Lower','19:30':'Raise',
+        '19:35':'Lower','10:00':'Raise'}
 
 
+# generator for grabbing the days within timespan of log
+def daterange(start_date,end_date):
+        for n in range(int((end_date-start_date).days)):
+                    yield start_date + timedelta(n)
+
+                    
 def filterLog(string):
    
     try:
@@ -81,54 +97,49 @@ def findEdges(LogFile):
 
 
 def main():
-    
+    [s_1,t_obj_1,df_1]=findEdges(LOG1)
+
+    [s_2,t_obj_2,df_2]=findEdges(LOG2)
+
+    print('sorting data for {}'.format(LOG1))
+    print(len(t_obj_1),len(s_1))
 
     return
-
-
-[s_1,t_obj_1,df_1]=findEdges(sys.argv[1])
-
-[s_2,t_obj_2,df_2]=findEdges(sys.argv[2])
-
-
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-app.layout = html.Div(children=[
-html.H1(children='Schedule Testing '),
-
-html.Div(children=''),
-
-    dcc.Graph(
-        id='example-graph',
-
-        figure={
-            'data': [
-                {'x': t_obj_1, 'y': s_1, 'type': 'line', 'name': sys.argv[1]},
-                {'x': t_obj_2, 'y': s_2, 'type': 'line', 'name': sys.argv[2]}
-
-            ],
-
-
-            'layout': {
-                'title': 'observed:' + LOG
-
-            }
-        }
-    ),
-    # placeholder for data https://dash.plot.ly/datatable see for reference
-    dash_table.DataTable(
-        id='table',
-        columns=[{"name": i, "id": i} for i in df_1.columns],
-        data=df_1.to_dict("rows"),
-
-                    )
-])
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+#
+#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+#
+#app.layout = html.Div(children=[
+#html.H1(children='Schedule Testing '),
+#
+#html.Div(children=''),
+#
+#    dcc.Graph(
+#        id='example-graph',
+#
+#        figure={
+#            'data': [
+#                {'x': t_obj_1, 'y': s_1, 'type': 'line', 'name': sys.argv[1]},
+#                {'x': t_obj_2, 'y': s_2, 'type': 'line', 'name': sys.argv[2]}
+#
+#            ],
+#
+#
+#            'layout': {
+#                'title': 'observed:' + LOG
+#
+#            }
+#        }
+#    ),
+#    # placeholder for data https://dash.plot.ly/datatable see for reference
+#    dash_table.DataTable(
+#        id='table',
+#        columns=[{"name": i, "id": i} for i in df_1.columns],
+#        data=df_1.to_dict("rows"),
+#
+#                    )
+#])
 
 if __name__ == '__main__':
-    print('sorting data for {}'.format(LOG))
-    
-    
-    print(len(t_obj_1),len(s_1))
-    app.run_server(debug=True,host='0.0.0.0', port = 8080)
+    main()
+   # app.run_server(debug=True,host='0.0.0.0', port = 8080)
