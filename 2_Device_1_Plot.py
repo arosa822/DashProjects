@@ -143,72 +143,77 @@ def findEdges(LogFile):
                 edge_time.append(t_obj[i])
                 state = 100
     data = {'time': edge_time, 'action': edge_movement}
-    df = pd.DataFrame(data)
-    return s, t_obj, df 
+    #df = pd.DataFrame(data)
+    return s, t_obj#, df 
 
 
 def main():
-    [s_1,t_obj_1,df_1]=findEdges(LOG1)
+    [s_1,t_obj_1]=findEdges(LOG1)
 
-    [s_2,t_obj_2,df_2]=findEdges(LOG2)
+    [s_2,t_obj_2]=findEdges(LOG2)
 
     print('sorting data for {}'.format(LOG1))
     print(len(t_obj_1),len(s_1))
     schedule = generateSchedule(t_obj_1)
 
     d = expandToList(schedule)
-    print(d['Datetime'],d['Action'])
-            
+    print(d['Datetime'])
+    n = 0 
+    while n< 5:
+        print(t_obj_2[n])
+        
+        n+=1
+    print(type(t_obj_2[0]))
     return
-
-[s_1,t_obj_1,df_1]=findEdges(LOG1)
-
-[s_2,t_obj_2,df_2]=findEdges(LOG2)
-
-print('sorting data for {}'.format(LOG1))
-print(len(t_obj_1),len(s_1))
-schedule = generateSchedule(t_obj_1)
-
-d = expandToList(schedule)
-##########################################################################
-# start of dash visualizations
-##########################################################################
-
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-app.layout = html.Div(children=[
-html.H1(children='Data Vizzzz..  '),
-
-html.Div(children=''),
-
-    dcc.Graph(
-        id='example-graph',
-
-        figure={
-            'data': [
-                {'x': t_obj_1, 'y': s_1, 'type': 'line', 'name': LOG1},
-                {'x': d['Datetime'], 'y': d['Action'], 'type': 'line', 'name':'Expected'}
-
-            ],
-
-
-            'layout': {
-                'title': 'simulated + ' + LOG1
-
-            }
-        }
-    ),
-    # placeholder for data https://dash.plot.ly/datatable see for reference
-    dash_table.DataTable(
-        id='table',
-        columns=[{"name": i, "id": i} for i in df_1.columns],
-        data=df_1.to_dict("rows"),
-
-                    )
-])
-
+#
+#[s_1,t_obj_1,df_1]=findEdges(LOG1)
+#
+#[s_2,t_obj_2,df_2]=findEdges(LOG2)
+#
+#print('sorting data for {}'.format(LOG1))
+#print(len(t_obj_1),len(s_1))
+#schedule = generateSchedule(t_obj_1)
+#
+#d = expandToList(schedule)
+###########################################################################
+## start of dash visualizations
+###########################################################################
+#
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+#
+#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+#
+#app.layout = html.Div(children=[
+#html.H1(children='Data Vizzzz..  '),
+#
+#html.Div(children=''),
+#
+#    dcc.Graph(
+#        id='example-graph',
+#
+#        figure={
+#            'data': [
+#                {'x': t_obj_1, 'y': s_1, 'type': 'line', 'name': LOG1},
+#                {'x': d['Datetime'], 'y': d['Action'], 'type': 'line', 'name':'Expected'}
+#
+#            ],
+#
+#
+#            'layout': {
+#                'title': 'simulated + ' + LOG1
+#
+#            }
+#        }
+#    ),
+#    # placeholder for data https://dash.plot.ly/datatable see for reference
+#    dash_table.DataTable(
+#        id='table',
+#        columns=[{"name": i, "id": i} for i in df_1.columns],
+#        data=df_1.to_dict("rows"),
+#
+#                    )
+#])
+#
 if __name__ == '__main__':
-    app.run_server(debug=True,host='0.0.0.0', port = 8080)
-    #main()
+    #app.run_server(debug=True,host='0.0.0.0', port = 8080)
+    main()
