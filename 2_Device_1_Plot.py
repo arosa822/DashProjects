@@ -64,10 +64,24 @@ def expandToList(dictionary):
             _date.append(k)
     #HACK: combine datetime and day
     n = 0
+    updatedDate = []
+    updatedState = []
+
     for i in _date:
         _date[n] = datetime.datetime.combine(_date[n].date(),datetime.datetime.strptime(_time[n],'%H:%M').time())
+
+        if n == 0:
+            updatedState.append(_state[n])
+            updatedDate.append(_date[n])
+        else:
+            updatedState.append(_state[n-1])
+            updatedState.append(_state[n])
+            updatedDate.append(_date[n]-timedelta(seconds=1))
+            updatedDate.append(_date[n])
+
         n += 1
-    df=pd.DataFrame({'Datetime':_date,'Action':_state})
+    
+    df=pd.DataFrame({'Datetime':updatedDate,'Action':updatedState})
     return df
 
 def filterLog(string):
@@ -196,5 +210,5 @@ html.Div(children=''),
 ])
 
 if __name__ == '__main__':
-    #app.run_server(debug=True,host='0.0.0.0', port = 8080)
-    main()
+    app.run_server(debug=True,host='0.0.0.0', port = 8080)
+    #main()

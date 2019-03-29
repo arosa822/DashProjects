@@ -85,7 +85,12 @@ def expandToList(dictionary):
             _state.append(i)
         for i in range(0,len(dictionary[k][1])):
             _date.append(k)
-    df=pd.DataFrame({'Day':_date,'Time':_time,'Action':_state})
+    #HACK: combine datetime and day 
+    n = 0
+    for i in _date:
+        _date[n] = datetime.datetime.combine(_date[n].date(),_time[n])
+        n += 1
+    df=pd.DataFrame({'Datetime':_date,'Action':_state})
     return df
 
 def main():
