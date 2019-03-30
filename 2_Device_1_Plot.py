@@ -19,12 +19,13 @@ LOG2 = ('./data/device_2.log')
 #LOG=sys.argv[1] 
 
 # predefined schedule
-SCHED = {'8:00':0,'10:30':100,
-        '10:35':0,'12:30':100,
-        '12:35':0,'13:30':100,
+SCHED = {'8:00':0,'11:30':100,
+        '11:35':0,'13:30':100,
         '13:35':0,'14:30':100,
-        '14:35':0,'16:30':100,
-        '16:35':0,'19:30':100,}
+        '14:35':0,'15:30':100,
+        '15:35':0,'18:30':100,
+        '18:35':0,'19:30':100,
+        '19:35':0,'22:00':100}
 
 
 # generator for grabbing the days within timespan of log
@@ -144,27 +145,47 @@ def findEdges(LogFile):
                 state = 100
     data = {'time': edge_time, 'action': edge_movement}
     #df = pd.DataFrame(data)
-    return s, t_obj#, df 
+    observed =pd.DataFrame({'time':t_obj,'state':s})
+ 
+    return observed#, df 
 
 
 def main():
-    [s_1,t_obj_1]=findEdges(LOG1)
+    obs_1=findEdges(LOG1)
+    
 
-    [s_2,t_obj_2]=findEdges(LOG2)
+    obs_2=findEdges(LOG2)
+    
 
-    print('sorting data for {}'.format(LOG1))
-    print(len(t_obj_1),len(s_1))
-    schedule = generateSchedule(t_obj_1)
+    schedule = generateSchedule(obs_2['time'])
 
     d = expandToList(schedule)
-    print(d['Datetime'])
+    #print(d['Datetime'])
+    
+    print('First set:')
     n = 0 
     while n< 5:
-        print(t_obj_2[n])
-        
-        n+=1
-    print(type(t_obj_2[0]))
+        print(obs_1['time'][n])
+        n += 1
+    print('Second set:')
+    n = 0 
+    while n< 5:
+        print(d['Datetime'][n])
+        n += 1
+    print(type(obs_1['time'][0]))
+    print(type(d['Datetime'][0]))
+
     return
+
+obs_1=findEdges(LOG1)
+
+
+obs_2=findEdges(LOG2)
+
+
+schedule = generateSchedule(obs_2['time'])
+
+d = expandToList(schedule)
 #
 #[s_1,t_obj_1,df_1]=findEdges(LOG1)
 #
@@ -175,45 +196,45 @@ def main():
 #schedule = generateSchedule(t_obj_1)
 #
 #d = expandToList(schedule)
-###########################################################################
-## start of dash visualizations
-###########################################################################
-#
-#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-#
-#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-#
-#app.layout = html.Div(children=[
-#html.H1(children='Data Vizzzz..  '),
-#
-#html.Div(children=''),
-#
-#    dcc.Graph(
-#        id='example-graph',
-#
-#        figure={
-#            'data': [
-#                {'x': t_obj_1, 'y': s_1, 'type': 'line', 'name': LOG1},
-#                {'x': d['Datetime'], 'y': d['Action'], 'type': 'line', 'name':'Expected'}
-#
-#            ],
-#
-#
-#            'layout': {
-#                'title': 'simulated + ' + LOG1
-#
-#            }
-#        }
-#    ),
-#    # placeholder for data https://dash.plot.ly/datatable see for reference
-#    dash_table.DataTable(
-#        id='table',
-#        columns=[{"name": i, "id": i} for i in df_1.columns],
-#        data=df_1.to_dict("rows"),
-#
-#                    )
-#])
-#
+##########################################################################
+# start of dash visualizations
+##########################################################################
+
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+app.layout = html.Div(children=[
+html.H1(children='Data Vizzzz..  '),
+
+html.Div(children=''),
+
+    dcc.Graph(
+        id='example-graph',
+
+        figure={
+            'data': [
+                {'x': obs_2['time'], 'y': obs_2['state'], 'type': 'line', 'name': LOG1},
+                {'x': d['Datetime'], 'y': d['Action'], 'type': 'line', 'name':'Expected'}
+
+            ],
+
+
+            'layout': {
+                'title': 'simulated + ' + LOG1
+
+            }
+        }
+    )
+    # placeholder for data https://dash.plot.ly/datatable see for reference
+   # dash_table.DataTable(
+   #     id='table',
+   #     columns=[{"name": i, "id": i} for i in df_1.columns],
+   #     data=df_1.to_dict("rows"),
+
+   #                 )
+])
+
 if __name__ == '__main__':
-    #app.run_server(debug=True,host='0.0.0.0', port = 8080)
-    main()
+    app.run_server(debug=True,host='0.0.0.0', port = 8080)
+    #main()
