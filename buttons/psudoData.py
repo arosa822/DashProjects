@@ -12,11 +12,12 @@ def writeLine(i):
     return 
 
 def main():
+    print("data generation in progres..")
     i = 0
     while True:
         writeLine(i)
-        i = i + 1
-        sleep(1)
+        i = i + 1 
+        sleep(30)
     return
 
 if __name__ == '__main__':
