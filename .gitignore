@@ -3,3 +3,6 @@ data/
 algorithms/__pycache__/
 vault
 data/
+buttons/sample.csv
+
+test_prod/
