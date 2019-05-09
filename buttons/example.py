@@ -38,17 +38,6 @@ def update_graph1(n_clicks):
 
     return plot_1
 
-def update_graph2(n_clicks):
-    [x,y] = parse('sample.csv')
-    
-
-    plot_2 = html.Div(children='plot 2'),dcc.Graph(id ='line graph1',
-            figure={'data': [ {'x': x,'y': y,'type':'line','name':'csvFile1'} ],
-            'layout': {'title': 'parsedData1'}})
-
-
-    return plot_2
-
 @app.callback(
         dash.dependencies.Output('container-button-basic_2', 'children'),
         [dash.dependencies.Input('button_2','n_clicks_timestamp')])
