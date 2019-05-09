@@ -28,11 +28,26 @@ app.layout = html.Div([
 @app.callback(
     dash.dependencies.Output('container-button-basic', 'children'),
     [dash.dependencies.Input('button', 'n_clicks')])
-def update_output(n_clicks):
+def update_graph1(n_clicks):
     [x,y] = parse('sample.csv')
-    return  html.Div(children=''),dcc.Graph(id ='line graph',
+    
+    plot_1 = html.Div(children=''),dcc.Graph(id ='line graph',
             figure={'data': [ {'x': x,'y': y,'type':'line','name':'csvFile'} ],
-            'layout': {'title': 'parsedData'}})
+            'layout': {'title': 'parsedData'}}),dcc.Graph(id = 'line2',figure={'data': [ {'x': x,'y': y,'type':'line','name':'csvFile'} ],
+            'layout': {'title': 'parsedData2'}})
+
+    return plot_1
+
+def update_graph2(n_clicks):
+    [x,y] = parse('sample.csv')
+    
+
+    plot_2 = html.Div(children='plot 2'),dcc.Graph(id ='line graph1',
+            figure={'data': [ {'x': x,'y': y,'type':'line','name':'csvFile1'} ],
+            'layout': {'title': 'parsedData1'}})
+
+
+    return plot_2
 
 @app.callback(
         dash.dependencies.Output('container-button-basic_2', 'children'),
@@ -43,3 +58,4 @@ def update_output_2(time_pressed):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
